@@ -1,47 +1,45 @@
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
-</script>
-
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
-
-  <main>
-    <TheWelcome />
-  </main>
+  <div class="app-container">
+    <h1>Llibreta de Contactes</h1>
+    <FormulariContacte @afegir-contacte="afegirContacte" />
+    <input v-model="cercaNom" placeholder="Cerca per nom" class="search-input" />
+    <LlistaContactes :contactes="contactesFiltrats" />
+  </div>
 </template>
 
+<script setup>
+import { ref, computed } from 'vue';
+import FormulariContacte from './components/FormulariContactes.vue';
+import LlistaContactes from './components/LlistaContactes.vue';
+
+// Llista reactiva de contactes i el terme de cerca
+const contactes = ref([]);
+const cercaNom = ref('');
+
+// Funció per filtrar contactes basat en el terme de cerca
+const contactesFiltrats = computed(() =>
+  contactes.value.filter(contacte =>
+    contacte.nom.toLowerCase().includes(cercaNom.value.toLowerCase())
+  )
+);
+
+// Afegeix un nou contacte a la llista
+const afegirContacte = contacte => {
+  contactes.value.push(contacte);
+};
+</script>
+
 <style scoped>
-header {
-  line-height: 1.5;
+.app-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  text-align: center;
 }
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
+.search-input {
+  width: 100%;
+  padding: 10px;
+  margin: 20px 0;
+  font-size: 16px;
 }
 </style>
